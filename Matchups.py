@@ -8,6 +8,8 @@ import statsapi
 import requests
 import json
 from datetime import datetime
+import pytz
+
 
 BASE_URL = "https://statsapi.mlb.com/api"
 
@@ -21,7 +23,15 @@ def main():
 
 
     for game in sched:
-        games.append({"away" : {'id': game['away_id'], 'sp' : game['away_probable_pitcher']}, "home": {'id': game['home_id'], 'sp' : game['away_probable_pitcher']}})
+        utc_time_str = game['game_datetime']
+        utc_time = datetime.strptime(utc_time_str, "%Y-%m-%dT%H:%M:%SZ")
+        utc_zone = pytz.timezone("UTC")
+        utc_time = utc_zone.localize(utc_time)
+        et_zone = pytz.timezone("America/New_York")
+        et_time = utc_time.astimezone(et_zone)
+        et_time_str = et_time.strftime("%I:%M %p EST")
+
+        games.append({"time" : et_time_str, "away" : {'id': game['away_id'], 'sp' : game['away_probable_pitcher']}, "home": {'id': game['home_id'], 'sp' : game['away_probable_pitcher']}})
     # # for game in sched:
     games
         
