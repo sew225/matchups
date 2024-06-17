@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, send_from_directory
-import server.Matchups as Matchups  # Import your script
+import Matchups as Matchups  # Import your script
 
 app = Flask(__name__)
 
